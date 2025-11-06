@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUK AKTIVITESI 1000000 - Fenerbahçe Geri Sayım</title>
+    <!-- Tailwind CSS CDN --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800;900&display=swap" rel="stylesheet">
+    <!-- Custom Tailwind Configuration --><script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'fb-yellow': '#FFED00', // Fenerbahçe Sarı
+                        'fb-blue': '#16368C',   // Fenerbahçe Lacivert
+                        'fb-dark-blue': '#0A1E52', // Koyu Lacivert Arka Plan
+                        'fb-gray': '#E0E0E0',   // Hafif gri metinler için
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A1E52; /* Koyu Lacivert Arka Plan */
+            color: white;
+            /* Çubuklu Arka Plan - Fenerbahçe Forması Esintisi */
+            background-image: linear-gradient(to right, 
+                #16368C 0%, #16368C 20%, 
+                #FFED00 20%, #FFED00 40%, 
+                #16368C 40%, #16368C 60%, 
+                #FFED00 60%, #FFED00 80%, 
+                #16368C 80%, #16368C 100%);
+            background-size: 100vw 100vh; /* Tam ekranı kaplasın */
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Kaydırmada sabit kalsın */
+            background-blend-mode: multiply; /* Renklerin daha koyu ve karıştırılmış görünmesini sağlar */
+        }
+        
+        #app {
+            background-color: rgba(10, 30, 82, 0.95); /* Koyu Lacivert ve hafif şeffaf */
+            backdrop-filter: blur(8px); /* Hafif bulanıklık efekti */
+        }
+
+        .time-box span:first-child {
+            transition: all 0.5s ease-in-out;
+            text-shadow: 0 0 15px rgba(255, 237, 0, 0.7); /* Sarı gölge */
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="app" class="w-full max-w-4xl p-8 md:p-12 rounded-2xl shadow-2xl text-center transition-all duration-300 border-4 border-fb-yellow">
+        <!-- Başlık Bölümü --><header class="mb-10 flex flex-col items-center">
+            <!-- Logo kaldırıldı. Burası boş bırakıldı. -->
+
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-fb-yellow leading-tight mt-6">
+                BUK AKTIVITESI 1000000
+            </h1>
+            <p id="target-date" class="text-fb-gray mt-3 text-lg md:text-xl">
+                Hedef Tarih: 20 Aralık 2025 00:00:00
+            </p>
+        </header>
+
+        <!-- Geri Sayım Kutuları --><div id="countdown-timer" class="flex flex-wrap justify-center gap-4 md:gap-8">
+            <!-- Günler Kutusu --><div class="time-box bg-fb-blue p-6 rounded-xl shadow-lg flex flex-col items-center min-w-[120px] md:min-w-[150px] transform hover:scale-105 transition-transform duration-300 border-2 border-fb-yellow">
+                <span id="days" class="text-5xl md:text-7xl font-mono font-bold text-fb-yellow">00</span>
+                <span class="text-sm md:text-base uppercase tracking-wider mt-1 text-white">Gün</span>
+            </div>
+
+            <!-- Saatler Kutusu --><div class="time-box bg-fb-blue p-6 rounded-xl shadow-lg flex flex-col items-center min-w-[120px] md:min-w-[150px] transform hover:scale-105 transition-transform duration-300 border-2 border-fb-yellow">
+                <span id="hours" class="text-5xl md:text-7xl font-mono font-bold text-fb-yellow">00</span>
+                <span class="text-sm md:text-base uppercase tracking-wider mt-1 text-white">Saat</span>
+            </div>
+
+            <!-- Dakikalar Kutusu --><div class="time-box bg-fb-blue p-6 rounded-xl shadow-lg flex flex-col items-center min-w-[120px] md:min-w-[150px] transform hover:scale-105 transition-transform duration-300 border-2 border-fb-yellow">
+                <span id="minutes" class="text-5xl md:text-7xl font-mono font-bold text-fb-yellow">00</span>
+                <span class="text-sm md:text-base uppercase tracking-wider mt-1 text-white">Dakika</span>
+            </div>
+
+            <!-- Saniyeler Kutusu --><div class="time-box bg-fb-blue p-6 rounded-xl shadow-lg flex flex-col items-center min-w-[120px] md:min-w-[150px] transform hover:scale-105 transition-transform duration-300 border-2 border-fb-yellow">
+                <span id="seconds" class="text-5xl md:text-7xl font-mono font-bold text-fb-yellow">00</span>
+                <span class="text-sm md:text-base uppercase tracking-wider mt-1 text-white">Saniye</span>
+            </div>
+        </div>
+
+        <!-- Bitiş Mesajı --><div id="end-message" class="hidden mt-10 p-6 bg-fb-yellow text-fb-blue rounded-xl shadow-xl border-4 border-fb-blue animate-pulse">
+            <p class="text-2xl md:text-4xl font-extrabold tracking-wide">
+                🎉 Geri sayım sona erdi! BUK AKTIVITESI 1000000 BAŞLADI! 🎉
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript Mantığı --><script>
+        // Geri sayımın biteceği tarih (20 Aralık 2025, Türkiye saatiyle 00:00:00)
+        const endDate = new Date("2025-12-20T00:00:00").getTime();
+
+        // Elementleri al
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        const timerContainer = document.getElementById('countdown-timer');
+        const endMessageEl = document.getElementById('end-message');
+
+        // Sayıyı iki haneli formatta döndüren yardımcı fonksiyon
+        const formatTime = (time) => time < 10 ? `0${time}` : time;
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            if (distance < 0) {
+                // Geri sayım bitti
+                clearInterval(countdownInterval);
+                timerContainer.classList.add('hidden'); // Sayıları gizle
+                endMessageEl.classList.remove('hidden'); // Bitiş mesajını göster
+                
+                // Sayıları sıfırla (görünmese bile tutarlılık için)
+                daysEl.textContent = '00';
+                hoursEl.textContent = '00';
+                minutesEl.textContent = '00';
+                secondsEl.textContent = '00';
+                
+                return;
+            }
+
+            // Zaman hesaplamaları
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Sonuçları ekrana yazdır
+            daysEl.textContent = formatTime(days);
+            hoursEl.textContent = formatTime(hours);
+            minutesEl.textContent = formatTime(minutes);
+            secondsEl.textContent = formatTime(seconds);
+        }
+
+        // Geri sayımı hemen başlat ve her saniye güncelle
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
